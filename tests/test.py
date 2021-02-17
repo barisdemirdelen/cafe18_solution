@@ -44,10 +44,32 @@ from cafe18.cafe5 import cafeize, decrypt, encrypt, integer_part_log, integer_pa
         ("0738 / f48", "1"),
         ("0E8 - 1", "4"),
         ("4 - 0D", "F2"),
+        ("F738 + 2", "f67"),
+        ("0A8 - E8", "09"),
+        ("F99E4 / 0A", "0958"),
+        ("06F0E8 / F38", "0b8"),
+        ("FC735C7388D89271CBC4 / FC5294DAB8D", "fc4878736b8c"),
+        ("FC71875CACE31C7A876 / FC39768768", "fc599d58d98c"),
+        ("FC638C mod F56", "f0e8"),
+        ("FCC39D mod F5", "e"),
     ],
 )
 def test_cafe18(input_str, expected_str):
     assert cafeize(input_str) == expected_str.lower()
+
+
+@pytest.mark.parametrize(
+    ["input_str", "unexpected_str"],
+    [
+        ("FC638C mod F56", "f0e78f14"),
+        ("1071D * F3072E", "076"),
+        ("F1831C - 0B416298", "f72"),
+        ("FC6BC mod E9", "e473"),
+        ("FCC39D mod F5", "f2"),
+    ],
+)
+def test_wrong_results(input_str, unexpected_str):
+    assert cafeize(input_str) != unexpected_str.lower()
 
 
 @pytest.mark.parametrize(

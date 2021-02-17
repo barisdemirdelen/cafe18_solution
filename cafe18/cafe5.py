@@ -1,7 +1,7 @@
 import math
 
 
-def integer_part_power(k):
+def integer_part_power(k: float):
     integer_part = math.floor(k)
     remainder_log = k - integer_part
 
@@ -13,7 +13,7 @@ def integer_part_power(k):
     return result
 
 
-def integer_part_log(n):
+def integer_part_log(n: float):
     log2n = math.log2(n)
     integer_part = math.floor(log2n)
     remainder = log2n - integer_part
@@ -32,7 +32,7 @@ def twos_comp(bin_str):
     return complement_bits
 
 
-def decrypt(o_str: str) -> int:
+def decrypt(o_str: str) -> float:
     bin_str = bin(int(o_str, 16))[2:].zfill(len(o_str) * 4)
     bin_str = bin_str.rstrip("0")
     sign = bin_str[0]
@@ -50,20 +50,21 @@ def decrypt(o_str: str) -> int:
 
         current = current_sign * integer_part_power(current_sign * current)
 
-    result = round(current)
+    result = current
+    # result = round(result, 5)
     result *= 1 if sign == "1" else -1
     return result
 
 
-def encrypt(operand: int) -> str:
-
+def encrypt(operand: float) -> str:
+    epsilon = 1e-5
     result = ""
     current = operand
     while True:
-        if current >= 0:
+        if current >= -epsilon:
             next_sign = 1
             result += "1"
-            if current == 0:
+            if -epsilon< current < epsilon:
                 break
         else:
             current = -current
@@ -95,13 +96,17 @@ def cafeize(input_str: str) -> str:
     if oper == "-":
         result = a - b
     if oper == "/":
-        result = int(a / b)
+        result = a / b
     if oper == "*":
         result = a * b
+    if oper == "mod":
+        result = a % b
 
+    print(f"{a} {oper} {b} = {result}")
     result_str = encrypt(result)
     return result_str
 
 
 if __name__ == "__main__":
-    print(cafeize("f8a / f"))
+    input_str = "FCC39D mod F5"
+    print(cafeize(input_str))
