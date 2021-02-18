@@ -1,21 +1,28 @@
-import math
+import mpmath
+from mpmath import mp
+
+mp.dps = 50
+
+
+def log2(n):
+    return mp.log(n, 2)
 
 
 def integer_part_power(k: float):
-    integer_part = math.floor(k)
+    integer_part = mp.floor(k)
     remainder_log = k - integer_part
 
     two_to_the_remainder = remainder_log + 1
 
-    remainder = math.log2(two_to_the_remainder)
+    remainder = log2(two_to_the_remainder)
 
     result = 2 ** (integer_part + remainder)
     return result
 
 
 def integer_part_log(n: float):
-    log2n = math.log2(n)
-    integer_part = math.floor(log2n)
+    log2n = log2(n)
+    integer_part = mp.floor(log2n)
     remainder = log2n - integer_part
     two_to_the_remainder = 2 ** remainder
     result = integer_part + two_to_the_remainder - 1
@@ -41,40 +48,43 @@ def decrypt(o_str: str) -> float:
         bin_str = twos_comp(bin_str)
     reversed_str = list(reversed(bin_str))
 
-    current = 0
+    current = mp.mpf(0)
     for i, letter in enumerate(reversed_str):
 
-        current_sign = 1
+        current_sign = mp.mpf(1)
         if i < len(reversed_str) - 1 and reversed_str[i + 1] == "0":
-            current_sign = -1
+            current_sign = mp.mpf(-1)
 
         current = current_sign * integer_part_power(current_sign * current)
 
     result = current
-    # result = round(result, 5)
-    result *= 1 if sign == "1" else -1
+    result *= mp.mpf(1) if sign == "1" else mp.mpf(-1)
     return result
 
 
 def encrypt(operand: float) -> str:
     epsilon = 1e-5
+    # if operand < 1e5:
+    #     epsilon = 1e-5
+    # else:
+    #     epsilon = min(abs(operand) * epsilon, epsilon)
     result = ""
-    current = operand
+    current = mp.mpf(operand)
     while True:
         if current >= -epsilon:
-            next_sign = 1
+            next_sign = mp.mpf(1)
             result += "1"
-            if -epsilon< current < epsilon:
+            if -epsilon < current < epsilon:
                 break
         else:
             current = -current
-            next_sign = -1
+            next_sign = mp.mpf(-1)
             result += "0"
 
         current = next_sign * integer_part_log(current)
 
-    zeros_to_add = 4 * math.ceil(len(result) / 4) - len(result)
-    res = result + "0" * zeros_to_add
+    zeros_to_add = 4 * mp.ceil(len(result) / 4) - len(result)
+    res = result + "0" * int(zeros_to_add)
 
     hex_result = ""
     for i in range(0, len(res), 4):
@@ -92,15 +102,15 @@ def cafeize(input_str: str) -> str:
 
     result = None
     if oper == "+":
-        result = a + b
-    if oper == "-":
-        result = a - b
-    if oper == "/":
-        result = a / b
-    if oper == "*":
-        result = a * b
-    if oper == "mod":
-        result = a % b
+        result = mpmath.fadd(a, b)
+    elif oper == "-":
+        result = mpmath.fsub(a, b)
+    elif oper == "/":
+        result = mpmath.fdiv(a, b)
+    elif oper == "*":
+        result = mpmath.fmul(a, b)
+    elif oper == "mod":
+        result = mpmath.fmod(a, b)
 
     print(f"{a} {oper} {b} = {result}")
     result_str = encrypt(result)

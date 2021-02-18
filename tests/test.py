@@ -1,4 +1,6 @@
+import mpmath
 import pytest
+from mpmath import mp
 
 from cafe18.cafe5 import cafeize, decrypt, encrypt, integer_part_log, integer_part_power
 
@@ -119,7 +121,8 @@ def test_wrong_results(input_str, unexpected_str):
     ],
 )
 def test_decrypt(input_str, expected_result):
-    assert decrypt(input_str) == expected_result
+    result = decrypt(input_str)
+    assert mpmath.nstr(result) == mpmath.nstr(mp.mpf(expected_result))
 
 
 @pytest.mark.parametrize(
