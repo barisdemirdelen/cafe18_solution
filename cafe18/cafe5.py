@@ -1,7 +1,8 @@
 import mpmath
 from mpmath import mp
 
-mp.dps = 50
+mp.dps = 309
+mp.pretty = True
 
 
 def log2(n):
@@ -51,34 +52,30 @@ def decrypt(o_str: str) -> float:
     current = mp.mpf(0)
     for i, letter in enumerate(reversed_str):
 
-        current_sign = mp.mpf(1)
+        current_sign = 1
         if i < len(reversed_str) - 1 and reversed_str[i + 1] == "0":
-            current_sign = mp.mpf(-1)
+            current_sign = -1
 
         current = current_sign * integer_part_power(current_sign * current)
 
     result = current
-    result *= mp.mpf(1) if sign == "1" else mp.mpf(-1)
+    result *= 1 if sign == "1" else -1
     return result
 
 
 def encrypt(operand: float) -> str:
-    epsilon = 1e-5
-    # if operand < 1e5:
-    #     epsilon = 1e-5
-    # else:
-    #     epsilon = min(abs(operand) * epsilon, epsilon)
     result = ""
+    epsilon = 1e-30
     current = mp.mpf(operand)
     while True:
         if current >= -epsilon:
-            next_sign = mp.mpf(1)
+            next_sign = 1
             result += "1"
             if -epsilon < current < epsilon:
                 break
         else:
             current = -current
-            next_sign = mp.mpf(-1)
+            next_sign = -1
             result += "0"
 
         current = next_sign * integer_part_log(current)
@@ -92,7 +89,6 @@ def encrypt(operand: float) -> str:
 
     return hex_result
 
-
 def cafeize(input_str: str) -> str:
     input_str = input_str.strip().lower()
     a, oper, b = input_str.split(" ")
@@ -102,15 +98,15 @@ def cafeize(input_str: str) -> str:
 
     result = None
     if oper == "+":
-        result = mpmath.fadd(a, b)
+        result = a + b
     elif oper == "-":
-        result = mpmath.fsub(a, b)
+        result = a - b
     elif oper == "/":
-        result = mpmath.fdiv(a, b)
+        result = a / b
     elif oper == "*":
-        result = mpmath.fmul(a, b)
+        result = a * b
     elif oper == "mod":
-        result = mpmath.fmod(a, b)
+        result = a % b
 
     print(f"{a} {oper} {b} = {result}")
     result_str = encrypt(result)

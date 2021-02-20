@@ -68,6 +68,7 @@ def test_cafe18(input_str, expected_str):
         ("F1831C - 0B416298", "f72"),
         ("FC6BC mod E9", "e473"),
         ("FCC39D mod F5", "f2"),
+        ("FE13DC05 mod F28", "OverflowError")
     ],
 )
 def test_wrong_results(input_str, unexpected_str):
