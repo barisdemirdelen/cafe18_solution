@@ -1,4 +1,5 @@
-import mpmath
+import math
+
 from mpmath import mp
 
 mp.dps = 309
@@ -9,8 +10,16 @@ def log2(n):
     return mp.log(n, 2)
 
 
+def floor(n):
+    return mp.floor(n)
+
+
+def number(n):
+    return mp.mpf(n)
+
+
 def integer_part_power(k: float):
-    integer_part = mp.floor(k)
+    integer_part = floor(k)
     remainder_log = k - integer_part
 
     two_to_the_remainder = remainder_log + 1
@@ -23,7 +32,7 @@ def integer_part_power(k: float):
 
 def integer_part_log(n: float):
     log2n = log2(n)
-    integer_part = mp.floor(log2n)
+    integer_part = floor(log2n)
     remainder = log2n - integer_part
     two_to_the_remainder = 2 ** remainder
     result = integer_part + two_to_the_remainder - 1
@@ -49,7 +58,7 @@ def decrypt(o_str: str) -> float:
         bin_str = twos_comp(bin_str)
     reversed_str = list(reversed(bin_str))
 
-    current = mp.mpf(0)
+    current = number(0)
     for i, letter in enumerate(reversed_str):
 
         current_sign = 1
@@ -66,7 +75,7 @@ def decrypt(o_str: str) -> float:
 def encrypt(operand: float) -> str:
     result = ""
     epsilon = 1e-30
-    current = mp.mpf(operand)
+    current = number(operand)
     while True:
         if current >= -epsilon:
             next_sign = 1
@@ -80,7 +89,7 @@ def encrypt(operand: float) -> str:
 
         current = next_sign * integer_part_log(current)
 
-    zeros_to_add = 4 * mp.ceil(len(result) / 4) - len(result)
+    zeros_to_add = 4 * math.ceil(len(result) / 4) - len(result)
     res = result + "0" * int(zeros_to_add)
 
     hex_result = ""
@@ -88,6 +97,7 @@ def encrypt(operand: float) -> str:
         hex_result += hex(int(res[i : i + 4], 2))[2:]
 
     return hex_result
+
 
 def cafeize(input_str: str) -> str:
     input_str = input_str.strip().lower()
