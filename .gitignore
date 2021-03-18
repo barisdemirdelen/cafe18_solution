@@ -1,0 +1,6 @@
+cafef18/run*
+.idea
+.pytest_cache
+venv
+*.iml
+__pycache__

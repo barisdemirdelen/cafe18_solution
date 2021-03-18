@@ -90,7 +90,6 @@ def decrypt(o_str: str) -> float:
             current_sign = -number(1)
 
         current = current_sign * integer_part_power(current_sign * current)
-        # current = custom_round(current)
 
     result = current
     result *= 1 if sign == "1" else -1
@@ -113,7 +112,6 @@ def encrypt(operand: float) -> str:
             result += "0"
 
         current = next_sign * integer_part_log(current)
-        # current = custom_round(current)
 
         if len(result) >= 40000:
             raise ValueError(f"Result too long for encrypting {operand}")
@@ -147,15 +145,11 @@ def cafeize(input_str: str) -> str:
     elif oper == "mod":
         result = mpmath.fmod(a, b)
 
-    # result = custom_round(result)
-
     print(f"{a} {oper} {b} = {result}")
     result_str = encrypt(result)
     return result_str
 
 
 if __name__ == "__main__":
-    # input_str = "0D05C88 * F05CDD"
-    # print(cafeize(input_str))
-
+    print(encrypt(40))
     print(decrypt("F180A04FB0986439E7"))
